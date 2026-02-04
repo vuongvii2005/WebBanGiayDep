@@ -72,17 +72,22 @@
 
           <h6 class="fw-bold mb-3">Chọn thông tin sản phẩm</h6>
 
-          <!-- Color Selection -->
+          <!-- Size Selection -->
           <div class="mb-3">
-            <label for="color" class="form-label">Màu sắc</label>
-            <select id="color" name="color" class="form-select">
-              <option value="">-- Chọn màu sắc --</option>
-              <option value="Đen">Đen</option>
-              <option value="Trắng">Trắng</option>
-              <option value="Xanh">Xanh</option>
-              <option value="Đỏ">Đỏ</option>
-              <option value="Xám">Xám</option>
-              <option value="Vàng">Vàng</option>
+            <label for="size" class="form-label">Kích cỡ</label>
+            <select id="size" name="size" class="form-select">
+              <option value="">-- Chọn kích cỡ --</option>
+              <option value="35">35</option>
+              <option value="36">36</option>
+              <option value="37">37</option>
+              <option value="38">38</option>
+              <option value="39">39</option>
+              <option value="40">40</option>
+              <option value="41">41</option>
+              <option value="42">42</option>
+              <option value="43">43</option>
+              <option value="44">44</option>
+              <option value="45">45</option>
             </select>
           </div>
 
