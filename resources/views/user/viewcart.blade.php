@@ -18,13 +18,16 @@
               <div>
                 <div class="fw-bold">{{ $item['name'] }}</div>
                 <div class="text-muted">SKU: {{ $item['id'] }}</div>
+                @if(!empty($item['size']))
+                  <div class="text-muted small">Size: {{ $item['size'] }}</div>
+                @endif
               </div>
             </div>
 
             <div class="d-flex align-items-center">
               <form method="POST" action="{{ route('cart.update') }}" style="display:inline-flex;align-items:center;">
                 @csrf
-                <input type="hidden" name="id" value="{{ $item['id'] }}">
+                <input type="hidden" name="id" value="{{ $item['key'] ?? $item['id'] }}">
                 <button type="button" onclick="this.parentElement.querySelector('input[name=qty]').stepDown();" class="btn btn-light" style="padding:6px 10px;">-</button>
                 <input type="number" name="qty" value="{{ $item['qty'] }}" min="0" style="width:60px;text-align:center;margin:0 8px;padding:6px;border:1px solid #eee;border-radius:6px;">
                 <button type="button" onclick="this.parentElement.querySelector('input[name=qty]').stepUp();" class="btn btn-light" style="padding:6px 10px;">+</button>
@@ -34,7 +37,7 @@
                 <div class="fw-bold">{{ number_format($item['price'] * $item['qty'], 0, ',', '.') }} ₫</div>
                 <form method="POST" action="{{ route('cart.remove') }}">
                   @csrf
-                  <input type="hidden" name="id" value="{{ $item['id'] }}">
+                  <input type="hidden" name="id" value="{{ $item['key'] ?? $item['id'] }}">
                   <button class="btn btn-sm btn-outline-gray mt-2" type="submit">Xóa</button>
                 </form>
               </div>

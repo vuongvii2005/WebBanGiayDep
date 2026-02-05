@@ -46,14 +46,17 @@
                         @foreach($orders as $order)
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <div class="fw-bold">Đơn hàng #{{ $order->id }}</div>
-                                    <small class="text-muted">Ngày đặt: {{ $order->created_at->format('d/m/Y') }}</small>
+                                    <a href="{{ route('account.orders.show', $order) }}" class="fw-bold text-decoration-none">Đơn hàng #{{ $order->id }}</a>
+                                    <small class="text-muted d-block">Ngày đặt: {{ $order->created_at->format('d/m/Y') }}</small>
                                 </div>
                                 <div class="text-end">
                                     <div class="fw-bold">{{ number_format($order->total, 0, ',', '.') }} ₫</div>
                                     <span class="badge bg-{{ \App\Helpers\OrderHelper::getStatusBadgeColor($order->status) }}">
                                         {{ \App\Helpers\OrderHelper::getStatusLabel($order->status) }}
                                     </span>
+                                    <div class="mt-2">
+                                        <a href="{{ route('account.orders.show', $order) }}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                                    </div>
                                 </div>
                             </li>
                         @endforeach

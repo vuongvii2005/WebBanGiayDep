@@ -64,11 +64,13 @@
         <p class="mb-4">{{ $prod['description'] ?? '' }}</p>
 
         <!-- Add to Cart Form - Color & Quantity -->
-        <form method="POST" action="{{ url('/cart/add') }}" class="mb-4 p-3 bg-light rounded">
+        <form method="POST" action="{{ url('/cart/add') }}" class="mb-4 p-3 bg-light rounded" id="productForm">
           @csrf
           <input type="hidden" name="id" value="{{ $prod['id'] ?? ($prod['sku'] ?? '') }}">
           <input type="hidden" name="name" value="{{ $prod['name'] ?? '' }}">
           <input type="hidden" name="price" value="{{ $prodPrice }}">
+          <input type="hidden" name="image" value="{{ $prodImg }}">
+          <input type="hidden" name="buy_now" id="buy_now_input" value="0">
 
           <h6 class="fw-bold mb-3">Chọn thông tin sản phẩm</h6>
 
@@ -89,6 +91,7 @@
               <option value="44">44</option>
               <option value="45">45</option>
             </select>
+            <div id="sizeError" class="text-danger small mt-1" style="display:none;">Vui lòng chọn kích cỡ</div>
           </div>
 
           <!-- Quantity Selection -->
@@ -97,7 +100,7 @@
             <input id="qty" name="qty" type="number" value="1" min="1" max="{{ $prod['stock'] ?? 1 }}" class="form-control" style="width:100px;">
           </div>
 
-          <!-- Add to Cart Button -->
+          <!-- Add to Cart / Buy Now Buttons -->
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-warning fw-bold" @if(($prod['stock'] ?? 0) <= 0) disabled @endif>
               @if(($prod['stock'] ?? 0) > 0)
@@ -106,9 +109,54 @@
                 Hết hàng
               @endif
             </button>
+            <button type="button" id="buyNowBtn" class="btn btn-primary fw-bold" @if(($prod['stock'] ?? 0) <= 0) disabled @endif>
+              Thanh toán ngay
+            </button>
             <a href="{{ url('/') }}" class="btn btn-secondary">Tiếp tục mua hàng</a>
           </div>
         </form>
+
+        <script>
+          (function(){
+            var buy = document.getElementById('buyNowBtn');
+            var form = document.getElementById('productForm');
+            var size = document.getElementById('size');
+            var sizeError = document.getElementById('sizeError');
+
+            function validateSize(){
+              if(!size) return true;
+              if(size.value === ''){
+                if(sizeError) sizeError.style.display = '';
+                size.focus();
+                return false;
+              }
+              if(sizeError) sizeError.style.display = 'none';
+              return true;
+            }
+
+            if(form){
+              form.addEventListener('submit', function(e){
+                if(!validateSize()){
+                  e.preventDefault();
+                  return false;
+                }
+                return true;
+              });
+            }
+
+            if(buy){
+              buy.addEventListener('click', function(){
+                if(!validateSize()) return;
+                var buyInput = document.getElementById('buy_now_input');
+                var originalAction = form.action;
+                buyInput.value = '1';
+                form.action = "{{ route('cart.buyNow') }}";
+                form.submit();
+                setTimeout(function(){ form.action = originalAction; buyInput.value = '0'; }, 1000);
+              });
+            }
+          })();
+        </script> 
 
         <!-- Shoe Information -->
         <div class="mb-4 p-3 bg-light rounded">

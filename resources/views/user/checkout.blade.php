@@ -62,7 +62,11 @@
       <div class="col-md-5">
         <div class="card p-4">
           <h3 class="h5 mb-3">Tóm tắt đơn hàng</h3>
-          @php $subtotal = 0; $cart = session('cart') ?? []; @endphp
+          @php
+            $subtotal = 0;
+            $checkoutSingle = session('checkout_single');
+            $cart = $checkoutSingle ? [$checkoutSingle] : (session('cart') ?? []);
+          @endphp
           @if(count($cart) === 0)
             <p>Giỏ hàng trống.</p>
           @else
@@ -116,6 +120,9 @@
                     <div>
                       <div class="fw-bold">{{ $item['name'] }}</div>
                       <div class="text-muted">Qty: {{ $item['qty'] }}</div>
+                      @if(!empty($item['size']))
+                        <div class="text-muted small">Size: {{ $item['size'] }}</div>
+                      @endif
                     </div>
                   </div>
                   <div>{{ number_format($line, 0, ',', '.') }} ₫</div>
@@ -160,4 +167,3 @@
 </script>
 @endpush
 
-@endsection

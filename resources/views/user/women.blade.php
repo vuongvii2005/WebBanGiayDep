@@ -26,7 +26,7 @@
                   </a>
                   <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                     <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                      <a href="#" data-sku="women-{{ $i }}" data-name="{{ $name }}" data-price="{{ $price }}" data-image="{{ asset('user/images/card-item'.((($i+3)%10)+1).'.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
+                      <a href="#" data-url="{{ route('product.show', 'women-'.$i) }}" data-sku="women-{{ $i }}" data-name="{{ $name }}" data-price="{{ $price }}" data-image="{{ asset('user/images/card-item'.((($i+3)%10)+1).'.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                         <svg class="shopping-carriage"><use xlink:href="#shopping-carriage"></use></svg>
                       </a>
                       <a href="{{ route('product.show', 'women-'.$i) }}" class="btn btn-light rounded-circle">

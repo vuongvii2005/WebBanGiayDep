@@ -1208,6 +1208,24 @@ a.text-hover:focus:after {
   transition: 0.3s ease-out;
 }
 
+.product-content .product-card .cart-button {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.product-content .product-card .cart-button .ajax-add-cart,
+.product-content .product-card .cart-button a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+}
+
 .product-content .product-card:hover .cart-concern {
   bottom: 85px;
   opacity: 1;

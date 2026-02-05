@@ -172,9 +172,7 @@
                 $cartCount = 0;
                 foreach ($cart as $item) { $cartCount += isset($item['qty']) ? (int)$item['qty'] : (isset($item['quantity']) ? (int)$item['quantity'] : 1); }
               @endphp
-              @if ($cartCount > 0)
-                <span class="cart-badge" style="position:absolute;top:-6px;right:-6px;background:#ff5252;color:#fff;border-radius:50%;padding:2px 6px;font-size:12px;font-weight:700;">{{ $cartCount }}</span>
-              @endif
+              <span class="cart-badge cart-count" style="position:absolute;top:-6px;right:-6px;background:#ff5252;color:#fff;border-radius:50%;padding:2px 6px;font-size:12px;font-weight:700;display:{{ $cartCount > 0 ? 'inline-block' : 'none' }};">{{ $cartCount }}</span>
             </a>
           </li>
         </ul>
@@ -288,16 +286,18 @@
             const li = document.createElement('li');
             li.className = 'list-group-item list-group-item-action cursor-pointer';
             li.style.cursor = 'pointer';
+            const formattedPrice = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(displayPrice);
             li.innerHTML = `
               <div class="d-flex align-items-center gap-2">
                 <small class="text-muted">${product.name}</small>
-                <small class="text-primary fw-bold">${(displayPrice).toLocaleString('vi-VN')} ₫</small>
+                <small class="text-primary fw-bold">${formattedPrice} ₫</small>
               </div>
             `;
             li.addEventListener('click', function() {
-              searchInput.value = product.name;
+              // Navigate directly to the product page (use SKU if present, otherwise id)
+              const slug = product.sku || product.id;
               suggestionsContainer.style.display = 'none';
-              document.getElementById('searchForm').submit();
+              window.location = "{{ url('/product') }}" + '/' + encodeURIComponent(slug);
             });
             suggestionsContainer.appendChild(li);
           });

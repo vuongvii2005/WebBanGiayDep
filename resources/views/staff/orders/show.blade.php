@@ -200,6 +200,11 @@
                                             @if($item->product)
                                                 <p class="text-xs text-gray-600 dark:text-gray-400">SKU: {{ $item->product->sku }}</p>
                                             @endif
+                                            @if(!empty($item->size))
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">Size: {{ $item->size }}</p>
+                                            @endif
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">SKU: {{ $item->product->sku }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

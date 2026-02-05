@@ -46,6 +46,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect('/')->with('success', 'Đăng ký thành công!');
+        return redirect()->intended('/');
     }
 }

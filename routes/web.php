@@ -53,8 +53,59 @@ Route::get('/account', function () {
     return view('user.account', compact('orders'));
 })->middleware('auth')->name('account');
 
+// Account edit
+Route::get('/account/edit', function () {
+    $user = auth()->user();
+    return view('user.account_edit', compact('user'));
+})->middleware('auth')->name('account.edit');
+
+Route::post('/account/edit', function (Illuminate\Http\Request $request) {
+    $user = auth()->user();
+    $data = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        'username' => ['nullable', 'string', 'max:255', 'unique:users,username,' . $user->id],
+    ]);
+
+    $user->name = $data['name'];
+    $user->email = $data['email'];
+    $user->username = $data['username'] ?? $user->username;
+    $user->save();
+
+    return redirect('/account')->with('status', 'Cập nhật thông tin thành công');
+})->middleware('auth')->name('account.update');
+
+// Change password
+Route::get('/account/password', function () {
+    $user = auth()->user();
+    return view('user.account_password', compact('user'));
+})->middleware('auth')->name('account.password');
+
+Route::post('/account/password', function (Illuminate\Http\Request $request) {
+    $user = auth()->user();
+    $data = $request->validate([
+        'current_password' => ['required'],
+        'password' => ['required', 'confirmed', 'min:8'],
+    ]);
+
+    if (!\Illuminate\Support\Facades\Hash::check($data['current_password'], $user->password)) {
+        return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng'])->withInput();
+    }
+
+    $user->password = \Illuminate\Support\Facades\Hash::make($data['password']);
+    $user->save();
+
+    return redirect('/account')->with('status', 'Đổi mật khẩu thành công');
+})->middleware('auth')->name('account.password.update');
+
 // User-facing order detail
 Route::get('/account/orders/{order}', [OrderController::class, 'show'])->middleware('auth')->name('account.orders.show');
+Route::get('/account/orders/{order}/edit', [OrderController::class, 'edit'])->middleware('auth')->name('account.orders.edit');
+Route::post('/account/orders/{order}', [OrderController::class, 'update'])->middleware('auth')->name('account.orders.update');
+Route::post('/account/orders/{order}/payment-method', [OrderController::class, 'updatePaymentMethod'])->middleware('auth')->name('account.orders.updatePaymentMethod');
+Route::post('/account/orders/{order}/items', [OrderController::class, 'updateItems'])->middleware('auth')->name('account.orders.updateItems');
+Route::post('/account/orders/{order}/cancel', [OrderController::class, 'cancel'])->middleware('auth')->name('account.orders.cancel');
+Route::post('/account/orders/{order}/repurchase', [OrderController::class, 'repurchase'])->middleware('auth')->name('account.orders.repurchase');
 Route::post('/account/orders/{order}/pay', [OrderController::class, 'pay'])->middleware('auth')->name('account.orders.pay');
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -63,13 +114,16 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name
 
 Route::get('/cart', [CartController::class, 'index']);
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/buy-now', [CartController::class, 'buyNow'])->name('cart.buyNow'); // Buy-now: set single-item checkout
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart/add-sample', [CartController::class, 'addSample'])->name('cart.add.sample');
 
-Route::view('/checkout', 'user.checkout');
-Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+Route::middleware('auth')->group(function () {
+    Route::view('/checkout', 'user.checkout');
+    Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+});
 
 Route::view('/men', 'user.men');
 Route::view('/women', 'user.women');

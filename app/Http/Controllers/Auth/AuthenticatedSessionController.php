@@ -48,7 +48,7 @@ class AuthenticatedSessionController extends Controller
                 }
             }
 
-            // Redirect regular users to homepage so they can continue shopping
+            // Redirect regular users back to checkout if coming from there, otherwise to homepage
             return redirect()->intended('/');
         }
 

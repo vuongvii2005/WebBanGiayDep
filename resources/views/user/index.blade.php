@@ -88,7 +88,7 @@
                     </a>
                     <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                       <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                        <a href="#" data-sku="{{ $id }}" data-name="{{ e($title) }}" data-price="{{ $price }}" data-image="{{ $image }}" class="btn btn-light ajax-add-cart rounded-circle">
+                        <a href="#" data-url="{{ route('product.show', $id) }}" data-sku="{{ $id }}" data-name="{{ e($title) }}" data-price="{{ $price }}" data-image="{{ $image }}" class="btn btn-light ajax-add-cart rounded-circle">
                           <svg class="shopping-carriage"><use xlink:href="#shopping-carriage"></use></svg>
                         </a>
                         <a href="{{ route('product.show', $id) }}" class="btn btn-light rounded-circle">
@@ -132,7 +132,7 @@
                 </a>
                 <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <a href="{{ url('/product/p6') }}" class="btn btn-light rounded-circle">
+                    <a href="#" data-url="{{ url('/product/p6') }}" data-sku="p6" data-name="Adidas Stan Smith" data-price="499000" data-image="{{ asset('user/images/card-item6.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>
@@ -161,7 +161,7 @@
                 </a>
                 <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <a href="{{ url('/product/p7') }}" class="btn btn-light rounded-circle">
+                    <a href="#" data-url="{{ url('/product/p7') }}" data-sku="p7" data-name="Adidas NMD R1" data-price="599000" data-image="{{ asset('user/images/card-item7.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>
@@ -190,7 +190,7 @@
                 </a>
                 <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <a href="{{ url('/product/p8') }}" class="btn btn-light rounded-circle">
+                    <a href="#" data-url="{{ url('/product/p8') }}" data-sku="p8" data-name="New Balance 990" data-price="699000" data-image="{{ asset('user/images/card-item8.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>
@@ -219,7 +219,7 @@
                 </a>
                 <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <a href="{{ url('/product/p9') }}" class="btn btn-light rounded-circle">
+                    <a href="#" data-url="{{ url('/product/p9') }}" data-sku="p9" data-name="Puma RS-X Reinvention" data-price="799000" data-image="{{ asset('user/images/card-item9.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>
@@ -248,7 +248,7 @@
                 </a>
                 <div class="cart-concern position-absolute d-flex justify-content-center w-100 h-100">
                   <div class="cart-button d-flex gap-2 justify-content-center align-items-center">
-                    <a href="{{ url('/product/p10') }}" class="btn btn-light rounded-circle">
+                    <a href="#" data-url="{{ url('/product/p10') }}" data-sku="p10" data-name="New Balance 574" data-price="599000" data-image="{{ asset('user/images/card-item10.jpg') }}" class="btn btn-light ajax-add-cart rounded-circle">
                       <svg class="shopping-carriage">
                         <use xlink:href="#shopping-carriage"></use>
                       </svg>

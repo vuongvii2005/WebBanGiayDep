@@ -84,75 +84,26 @@
     }
 
     function postJson(url, data) {
-      var token = document.querySelector('meta[name="csrf-token"]');
-      var headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-      if (token) {
-        headers['X-CSRF-TOKEN'] = token.getAttribute('content');
-      }
-      
+      var token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : null;
+      var headers = {\n        'Content-Type': 'application/json',\n        'Accept': 'application/json'\n      };
+      if (token) headers['X-CSRF-TOKEN'] = token;
       return fetch(url, {
         method: 'POST',
         credentials: 'same-origin',
         headers: headers,
         body: JSON.stringify(data)
       }).then(function(r){
-        var contentType = r.headers.get('content-type') || '';
-        
         if (!r.ok) {
-          if (contentType.includes('application/json')) {
-            return r.json().then(function(j){ throw j; });
-          } else {
-            throw {message: 'Server error: ' + r.status};
-          }
+          return r.json().then(function(j){ throw j; });
         }
-        
-        if (contentType.includes('application/json')) {
-          return r.json();
-        } else {
-          throw {message: 'Expected JSON response'};
-        }
-      }).catch(function(err){
-        console.error('Fetch error:', err);
-        throw err;
+        return r.json();
       });
     }
 
-    function updateCartCount(count){
-      try{
-        count = parseInt(count) || 0;
-      }catch(e){ count = 0; }
-      if (count <= 0) {
-        var existing = document.querySelector('.cart-count');
-        if (existing) existing.remove();
-        return;
-      }
-
-      var badge = document.querySelector('.cart-count');
-      if (badge) {
-        badge.textContent = count;
-        return;
-      }
-
-      // Create badge inside cart link (look for aria-label or href to /cart)
-      var cartLink = document.querySelector('a[aria-label="View cart"]') || document.querySelector('a[href$="/cart"]');
-      if (!cartLink) return;
-
-      var span = document.createElement('span');
-      span.className = 'cart-badge cart-count';
-      span.setAttribute('style', 'position:absolute;top:-6px;right:-6px;background:#ff5252;color:#fff;border-radius:50%;padding:2px 6px;font-size:12px;font-weight:700;');
-      span.textContent = count;
-      cartLink.appendChild(span);
-    }
-
-    // Click handler for quick-add cart buttons
     document.addEventListener('click', function(e){
       var el = e.target.closest && e.target.closest('.ajax-add-cart');
       if (!el) return;
       e.preventDefault();
-      
       var sku = el.getAttribute('data-sku');
       var name = el.getAttribute('data-name');
       var price = el.getAttribute('data-price');
@@ -161,7 +112,9 @@
 
       // If size is not provided, show size selection modal
       if (!size) {
+        // Store product info in window for later use
         window.quickAddProduct = { sku: sku, name: name, price: price, image: image };
+        // Show modal
         if (document.getElementById('sizeSelectionModal')) {
           var modal = new bootstrap.Modal(document.getElementById('sizeSelectionModal'));
           modal.show();
@@ -172,70 +125,57 @@
       }
 
       // If size is already provided, add directly to cart
-      postJson("{{ url('/cart/add') }}", { 
-        id: sku, 
-        name: name, 
-        price: price, 
-        qty: 1, 
-        image: image, 
-        size: size 
-      }).then(function(json){
+      postJson("{{ url('/cart/add') }}", { id: sku, name: name, price: price, qty: 1, image: image, size: size })
+        .then(function(json){
           if (json && json.status === 'success') {
-          showToast(json.message || 'Đã thêm vào giỏ hàng');
-          if (typeof json.cart_count !== 'undefined') {
-            updateCartCount(json.cart_count);
+            showToast(json.message || 'Đã thêm vào giỏ hàng');
+            if (json.cart_count) {
+              var badge = document.querySelector('.cart-count');
+              if (badge) badge.textContent = json.cart_count;
+            }
+          } else if (json && json.message) {
+            showToast(json.message);
+          } else {
+            showToast('Đã có lỗi, vui lòng thử lại');
           }
-        } else if (json && json.message) {
-          showToast(json.message);
-        } else {
-          showToast('Đã có lỗi, vui lòng thử lại');
-        }
-      }).catch(function(err){
-        if (err && err.errors) {
-          var first = Object.keys(err.errors)[0];
-          showToast(err.errors[first][0]);
-        } else if (err && err.message) {
-          showToast(err.message);
-        } else {
-          showToast('Đã có lỗi, vui lòng thử lại');
-        }
-      });
+        }).catch(function(err){
+          if (err && err.errors) {
+            var first = Object.keys(err.errors)[0];
+            showToast(err.errors[first][0]);
+          } else if (err && err.message) {
+            showToast(err.message);
+          } else {
+            showToast('Đã có lỗi, vui lòng thử lại');
+          }
+        });
     });
 
     // Handle modal size selection
-    var confirmBtn = document.getElementById('confirmAddToCart');
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', function(){
-        var sizeSelect = document.getElementById('quickAddSize');
-        var selectedSize = sizeSelect.value;
-        var sizeError = document.getElementById('sizeError');
+    document.getElementById('confirmAddToCart').addEventListener('click', function(){
+      var sizeSelect = document.getElementById('quickAddSize');
+      var selectedSize = sizeSelect.value;
+      var sizeError = document.getElementById('sizeError');
 
-        if (!selectedSize) {
-          sizeError.style.display = 'block';
-          return;
-        }
+      if (!selectedSize) {
+        sizeError.style.display = 'block';
+        return;
+      }
 
-        sizeError.style.display = 'none';
-        var product = window.quickAddProduct;
+      sizeError.style.display = 'none';
+      var product = window.quickAddProduct;
 
-        if (!product) return;
+      if (!product) return;
 
-        postJson("{{ url('/cart/add') }}", { 
-          id: product.sku, 
-          name: product.name, 
-          price: product.price, 
-          qty: 1, 
-          image: product.image, 
-          size: selectedSize 
-        }).then(function(json){
+      postJson("{{ url('/cart/add') }}", { id: product.sku, name: product.name, price: product.price, qty: 1, image: product.image, size: selectedSize })
+        .then(function(json){
           if (json && json.status === 'success') {
             showToast(json.message || 'Đã thêm vào giỏ hàng');
-            if (typeof json.cart_count !== 'undefined') {
-              updateCartCount(json.cart_count);
+            if (json.cart_count) {
+              var badge = document.querySelector('.cart-count');
+              if (badge) badge.textContent = json.cart_count;
             }
-            var modalEl = document.getElementById('sizeSelectionModal');
-            var modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
+            // Close modal and reset
+            bootstrap.Modal.getInstance(document.getElementById('sizeSelectionModal')).hide();
             sizeSelect.value = '';
             window.quickAddProduct = null;
           } else if (json && json.message) {
@@ -253,7 +193,6 @@
             showToast('Đã có lỗi, vui lòng thử lại');
           }
         });
-      });
-    }
+    });
   })();
 </script>

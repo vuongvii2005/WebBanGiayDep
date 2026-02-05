@@ -19,22 +19,29 @@ class CartController extends Controller
             'id' => ['required'],
             'name' => ['required'],
             'price' => ['required', 'numeric'],
+            'size' => ['required', 'string'], // require size
             'qty' => ['nullable', 'integer', 'min:1'],
             'image' => ['nullable', 'string'],
         ]);
 
-        $id = (string) $data['id'];
+        $productId = (string) $data['id'];
+        $size = (string) $data['size'];
         $qty = $data['qty'] ?? 1;
 
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$id])) {
-            $cart[$id]['qty'] += $qty;
+        // Use composite key so same product different size are separate
+        $key = $productId . '|' . $size;
+
+        if (isset($cart[$key])) {
+            $cart[$key]['qty'] += $qty;
         } else {
-            $cart[$id] = [
-                'id' => $id,
+            $cart[$key] = [
+                'key' => $key,
+                'id' => $productId, // real product id / sku
                 'name' => $data['name'],
                 'price' => floatval($data['price']),
+                'size' => $size,
                 'qty' => $qty,
                 'image' => $data['image'] ?? null,
             ];
@@ -85,11 +92,38 @@ class CartController extends Controller
         $data = $request->validate(['id' => ['required']]);
         $id = (string) $data['id'];
         $cart = session()->get('cart', []);
-        if (isset($cart[$id])) {
+            if (isset($cart[$id])) {
             unset($cart[$id]);
             session(['cart' => $cart]);
         }
         return back()->with('status', 'Đã xóa sản phẩm khỏi giỏ hàng');
+    }
+
+    // Buy now: set single item for immediate checkout
+    public function buyNow(Request $request)
+    {
+        $data = $request->validate([
+            'id' => ['required'],
+            'name' => ['required'],
+            'price' => ['required','numeric'],
+            'qty' => ['nullable','integer','min:1'],
+            'image' => ['nullable','string'],
+            'size' => ['required','string'],
+        ]);
+
+        $item = [
+            'id' => (string) $data['id'],
+            'name' => $data['name'],
+            'price' => floatval($data['price']),
+            'qty' => $data['qty'] ?? 1,
+            'image' => $data['image'] ?? null,
+            'size' => $data['size'] ?? null,
+        ];
+
+        // ensure checkout_single has size if provided
+        session(['checkout_single' => $item]);
+
+        return redirect('/checkout');
     }
 
     // Clear cart
@@ -107,13 +141,16 @@ class CartController extends Controller
             'name' => 'Sample Product',
             'price' => 49.99,
             'qty' => 1,
+            'size' => 'M',
+            'image' => null,
         ];
         $cart = session()->get('cart', []);
-        $id = $sample['id'];
-        if (isset($cart[$id])) {
-            $cart[$id]['qty'] += 1;
+        $key = $sample['id'] . '|' . $sample['size'];
+        if (isset($cart[$key])) {
+            $cart[$key]['qty'] += 1;
         } else {
-            $cart[$id] = $sample;
+            $sample['key'] = $key;
+            $cart[$key] = $sample;
         }
         session(['cart' => $cart]);
         return back()->with('status', 'Đã thêm sản phẩm mẫu vào giỏ hàng');
