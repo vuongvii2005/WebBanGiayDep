@@ -39,12 +39,10 @@ class AuthenticatedSessionController extends Controller
                 ])->onlyInput('login');
             }
             
-            // Redirect based on user role
+            // Redirect based on admin flag
             if ($user) {
-                if ($user->role === 'admin' || $user->is_admin) {
+                if ($user->is_admin) {
                     return redirect()->intended('/admin');
-                } elseif ($user->role === 'staff') {
-                    return redirect()->intended('/staff');
                 }
             }
 

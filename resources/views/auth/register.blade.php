@@ -111,12 +111,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        @error('role')
-                            <span class="error-message">{{ $message }}</span>
-                        @enderror
-                    </div>
-
                     <div class="terms-checkbox">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" name="terms" id="terms" required>

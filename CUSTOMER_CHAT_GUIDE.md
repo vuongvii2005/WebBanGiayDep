@@ -202,7 +202,6 @@ setInterval(function() {
 
 - [ ] Tệp đính kèm (upload hình ảnh)
 - [ ] Email thông báo khi có phản hồi mới
-- [ ] Gán yêu cầu cho nhân viên cụ thể
 - [ ] Đánh giá hỗ trợ sau khi giải quyết
 - [ ] Báo cáo thống kê
 - [ ] Live chat real-time (WebSocket)

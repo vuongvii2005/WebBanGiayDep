@@ -6,15 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private const TABLE = 'support_responses';
+    private const TICKET_TABLE = 'support_tickets';
+    private const USERS_TABLE = 'users';
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('support_responses', function (Blueprint $table) {
+        Schema::create(self::TABLE, function (Blueprint $table) {
             $table->id();
-            $table->foreignId('support_ticket_id')->constrained('support_tickets')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('support_ticket_id')->constrained(self::TICKET_TABLE)->onDelete('cascade');
+            $table->foreignId('user_id')->constrained(self::USERS_TABLE)->onDelete('cascade');
             $table->longText('response_text');
             $table->boolean('is_admin_response')->default(false);
             $table->timestamps();
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('support_responses');
+        Schema::dropIfExists(self::TABLE);
     }
 };

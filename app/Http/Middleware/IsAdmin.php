@@ -15,7 +15,7 @@ class IsAdmin
     {
         $user = Auth::user();
 
-        if (!$user || ($user->role !== 'admin' && !$user->is_admin)) {
+        if (!$user || !method_exists($user, 'isAdmin') || !$user->isAdmin()) {
             abort(403, 'Unauthorized.');
         }
 

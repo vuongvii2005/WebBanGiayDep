@@ -16,11 +16,9 @@
       <aside class="z-20 w-64 overflow-y-auto bg-white dark:bg-gray-800 flex-shrink-0">
         <div class="py-4 text-gray-500 dark:text-gray-400">
           @php
-            $userRole = auth()->user()->role ?? (auth()->user()->is_admin ? 'admin' : 'customer');
-            $isStaff = $userRole === 'staff';
-            $isAdmin = $userRole === 'admin' || auth()->user()->is_admin;
-            $dashboardUrl = $isStaff ? url('staff/dashboard') : url('admin/dashboard');
-            $roleLabel = $isStaff ? 'Nhân viên' : 'Admin';
+            $isAdmin = auth()->user()->is_admin;
+            $dashboardUrl = url('admin/dashboard');
+            $roleLabel = 'Admin';
           @endphp
           <ul class="mt-6">
             <li class="relative px-6 py-3">
@@ -65,9 +63,9 @@
             </li>
             @endif
 
-            <!-- Orders Menu - Both Admin and Staff -->
+            <!-- Orders Menu - Admin only -->
             <li class="relative px-6 py-3">
-              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" href="{{ $isStaff ? route('staff.orders.index') : route('admin.orders.index') }}">
+              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" href="{{ route('admin.orders.index') }}">
                 <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                   <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
@@ -75,9 +73,9 @@
               </a>
             </li>
             
-            <!-- Support Menu - Both Admin and Staff -->
+            <!-- Support Menu - Admin only -->
             <li class="relative px-6 py-3">
-              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" href="{{ $isStaff ? route('staff.support.index') : route('admin.support.index') }}">
+              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200" href="{{ route('admin.support.index') }}">
                 <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                   <path d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
@@ -125,9 +123,7 @@
                         <div>
                           <p class="font-semibold">{{ auth()->user()->name }}</p>
                           <p class="text-xs text-gray-600 dark:text-gray-400">
-                            @if($isStaff)
-                              <span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">Nhân viên</span>
-                            @elseif($isAdmin)
+                            @if($isAdmin)
                               <span class="px-2 py-1 text-xs font-semibold rounded bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100">Admin</span>
                             @endif
                           </p>
@@ -159,5 +155,7 @@
       </div>
     </div>
     @stack('scripts')
+    <!-- Chatbot Widget -->
+    @include('partials.chatbot_widget')
   </body>
 </html>

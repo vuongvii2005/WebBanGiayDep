@@ -28,13 +28,11 @@ class UserController extends Controller
             'username' => 'nullable|string|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'is_admin' => 'nullable|boolean',
-            'role' => 'nullable|in:customer,staff,admin',
             'status' => 'nullable|in:active,banned',
         ]);
 
         $validated['password'] = Hash::make($request->password);
         $validated['is_admin'] = $request->has('is_admin') ? 1 : 0;
-        $validated['role'] = $request->input('role', 'customer');
         $validated['status'] = $request->input('status', 'active');
 
         User::create($validated);
@@ -55,7 +53,6 @@ class UserController extends Controller
             'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'is_admin' => 'nullable|boolean',
-            'role' => 'nullable|in:customer,staff,admin',
             'status' => 'nullable|in:active,banned',
         ]);
 
@@ -66,7 +63,6 @@ class UserController extends Controller
         }
 
         $validated['is_admin'] = $request->has('is_admin') ? 1 : 0;
-        $validated['role'] = $request->input('role', $user->role ?? 'customer');
         $validated['status'] = $request->input('status', $user->status ?? 'active');
 
         $user->update($validated);

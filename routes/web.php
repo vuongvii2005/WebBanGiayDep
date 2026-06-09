@@ -15,6 +15,7 @@ use App\Http\Controllers\SearchController;
 
 // Support controllers
 use App\Http\Controllers\SupportController;
+use App\Http\Controllers\ChatController;
 
 // Admin controllers
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -24,10 +25,6 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\SupportController as AdminSupportController;
 
-// Staff controllers
-use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
-use App\Http\Controllers\Staff\OrderController as StaffOrderController;
-use App\Http\Controllers\Staff\SupportController as StaffSupportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -141,6 +138,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/support/{ticket}/close', [SupportController::class, 'close'])->name('support.close');
 });
 
+// Chat routes (protected by auth)
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/history/{sessionId}', [ChatController::class, 'getHistory'])->name('chat.history');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Policy Pages (Public)
+|--------------------------------------------------------------------------
+*/
+Route::view('/policies/shipping', 'policies.shipping')->name('policies.shipping');
+Route::view('/policies/return', 'policies.return')->name('policies.return');
+Route::view('/policies/warranty', 'policies.warranty')->name('policies.warranty');
+Route::view('/policies/payment', 'policies.payment')->name('policies.payment');
+Route::view('/policies/privacy', 'policies.privacy')->name('policies.privacy');
+Route::view('/policies/terms', 'policies.terms')->name('policies.terms');
+
 // Register
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
@@ -202,32 +218,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','is_admin'])->group(f
     Route::view('tables', 'admin.tables');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Staff routes
-|--------------------------------------------------------------------------
-*/
-Route::redirect('/staff', '/staff/dashboard')->name('staff');
-
-Route::prefix('staff')->name('staff.')->middleware(['auth', 'is_staff'])->group(function () {
-    // Dashboard
-    Route::get('/', [StaffDashboardController::class, 'index'])->name('dashboard');
-    Route::get('dashboard', [StaffDashboardController::class, 'index']);
-
-    // Orders
-    Route::get('orders', [StaffOrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{order}', [StaffOrderController::class, 'show'])->name('orders.show');
-    Route::post('orders/{order}/status', [StaffOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    Route::post('orders/{order}/approve', [StaffOrderController::class, 'approve'])->name('orders.approve');
-    Route::post('orders/{order}/reject', [StaffOrderController::class, 'reject'])->name('orders.reject');
-
-    // Support tickets (staff)
-    Route::get('support', [StaffSupportController::class, 'index'])->name('support.index');
-    Route::get('support/{ticket}', [StaffSupportController::class, 'show'])->name('support.show');
-    Route::post('support/{ticket}/response', [StaffSupportController::class, 'addResponse'])->name('support.addResponse');
-    Route::post('support/{ticket}/status', [StaffSupportController::class, 'updateStatus'])->name('support.updateStatus');
-    Route::post('support/{ticket}/priority', [StaffSupportController::class, 'updatePriority'])->name('support.updatePriority');
-});
 
 /*
 |--------------------------------------------------------------------------

@@ -168,7 +168,6 @@ Chức năng hỗ trợ khách hàng cho phép khách hàng tạo các yêu cầ
 
 - Thêm tệp đính kèm cho yêu cầu
 - Tự động gửi email thông báo khi có phản hồi mới
-- Gán yêu cầu cho các nhân viên hỗ trợ cụ thể
 - Đánh giá chất lượng hỗ trợ sau khi giải quyết
 - Báo cáo thống kê về thời gian giải quyết
 - Cấu hình mẫu phản hồi nhanh

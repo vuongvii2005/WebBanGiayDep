@@ -12,6 +12,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('order_id');
             $table->string('product_id')->nullable();
             $table->string('name');
+            $table->string('image')->nullable();
+            $table->string('color')->nullable();
+            $table->string('size')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('qty');
             $table->decimal('total', 10, 2);

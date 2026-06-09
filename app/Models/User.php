@@ -23,7 +23,6 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
-        'role',
         'status',
     ];
 
@@ -53,15 +52,12 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->role === 'admin' || $this->is_admin === true;
-    }
+        // Prefer new `role` column when present; fall back to legacy `is_admin` flag
+        if (property_exists($this, 'role') && !empty($this->role)) {
+            return $this->role === 'admin' || ($this->is_admin ?? false) === true;
+        }
 
-    /**
-     * Check if user is staff
-     */
-    public function isStaff()
-    {
-        return $this->role === 'staff';
+        return ($this->is_admin ?? false) === true;
     }
 
     /**
@@ -69,7 +65,7 @@ class User extends Authenticatable
      */
     public function isCustomer()
     {
-        return $this->role === 'customer';
+        return !$this->isAdmin();
     }
 
     /**

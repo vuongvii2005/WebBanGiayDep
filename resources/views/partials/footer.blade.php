@@ -3,15 +3,14 @@
     <div class="row mb-4">
       <div class="col-lg-2 pb-4">
         <div class="footer-menu">
-          <h5 class="widget-title pb-3 fw-bold">Thông tin</h5>
+          <h5 class="widget-title pb-3 fw-bold">Chính sách</h5>
           <ul class="menu-list list-unstyled">
-            <li class="pb-2"><a href="#" class="text-decoration-none">Theo dõi đơn hàng</a></li>
-            <li class="pb-2"><a href="{{ url('/') }}" class="text-decoration-none">Blog của chúng tôi</a></li>
-            <li class="pb-2"><a href="#" class="text-decoration-none">Chính sách bảo mật</a></li>
-            <li class="pb-2"><a href="#" class="text-decoration-none">Giao hàng</a></li>
-            <li class="pb-2"><a href="#" class="text-decoration-none">Liên hệ</a></li>
-            <li class="pb-2"><a href="#" class="text-decoration-none">Trợ giúp</a></li>
-            <li class="pb-2"><a href="#" class="text-decoration-none">Cộng đồng</a></li>
+            <li class="pb-2"><a href="{{ route('policies.shipping') }}" class="text-decoration-none">Vận chuyển</a></li>
+            <li class="pb-2"><a href="{{ route('policies.return') }}" class="text-decoration-none">Trả lại & hoàn tiền</a></li>
+            <li class="pb-2"><a href="{{ route('policies.warranty') }}" class="text-decoration-none">Bảo hành</a></li>
+            <li class="pb-2"><a href="{{ route('policies.payment') }}" class="text-decoration-none">Thanh toán</a></li>
+            <li class="pb-2"><a href="{{ route('policies.privacy') }}" class="text-decoration-none">Bảo mật dữ liệu</a></li>
+            <li class="pb-2"><a href="{{ route('policies.terms') }}" class="text-decoration-none">Điều khoản</a></li>
           </ul>
         </div>
       </div>

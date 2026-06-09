@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('webnc_products', function (Blueprint $table) {
             $table->id();
+            $table->string('sku')->nullable()->unique();
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -24,6 +25,15 @@ return new class extends Migration
             $table->integer('stock')->default(0);
             $table->string('size')->nullable(); // e.g., "36,37,38,39,40"
             $table->string('color')->nullable();
+            $table->string('brand')->nullable(); // Thuong hieu
+            $table->string('material')->nullable(); // Chat lieu
+            $table->text('specifications')->nullable(); // Thong so ky thuat
+            $table->decimal('rating', 3, 2)->default(0); // Danh gia (0-5)
+            $table->integer('reviews_count')->default(0); // So luong danh gia
+            $table->integer('views_count')->default(0); // So luot xem
+            $table->integer('sales_count')->default(0); // So luong ban
+            $table->text('warranty')->nullable(); // Bao hanh
+            $table->text('care_instructions')->nullable(); // Huong dan bao quan
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -35,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('webnc_products');
     }
 };

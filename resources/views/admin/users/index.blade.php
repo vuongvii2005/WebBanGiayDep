@@ -61,16 +61,9 @@
                                     {{ $user->username ?? 'N/A' }}
                                 </td>
                                 <td class="px-4 py-3 text-xs">
-                                    @php
-                                        $role = $user->role ?? ($user->is_admin ? 'admin' : 'customer');
-                                    @endphp
-                                    @if($role === 'admin')
+                                    @if($user->is_admin)
                                         <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:bg-red-700 dark:text-red-100">
                                             Admin
-                                        </span>
-                                    @elseif($role === 'staff')
-                                        <span class="px-2 py-1 font-semibold leading-tight text-blue-700 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-100">
-                                            Nhân viên
                                         </span>
                                     @else
                                         <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100">
